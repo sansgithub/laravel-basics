@@ -18,8 +18,8 @@
     @endif
     <div class="row">
         <div class="col-md-6">
-        <h3>Sign Up</h3>
-            <form method="post" action="{{ route('signup') }}">
+            <h3>Sign Up</h3>
+            <form method="post" action="/signup">
                 <div class="form-group {{ $errors->has('email')? 'has-error':''}}">
                     <label for="email">Your E-mail</label>
                     <input type="text" class="form-control" name="email" id="email" value="{{ Request::old('email') }}">
@@ -37,15 +37,15 @@
             </form>
         </div>
         <div class="col-md-6">
-        <h3>Sign In</h3>
-            <form method="post" action="{{ route('signin') }}">
+            <h3>Sign In</h3>
+            <form method="post" action="/signin">
                 <div class="form-group">
                     <label for="email">Your E-mail</label>
-                    <input type="text" class="form-control" name="email" id="email" value="{{ Request::old('email') }}">
+                    <input type="text" class="form-control" name="email_for_signin" id="email" value="{{ Request::old('email_for_signin') }}">
                 </div>
                 <div class="form-group">
                     <label for="password">Your Password</label>
-                    <input type="password" class="form-control" name="password" id="password" value="{{ Request::old('password') }}">
+                    <input type="password" class="form-control" name="password_for_signin" id="password" value="{{ Request::old('password_for_signin') }}">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <input type="hidden" name="_token" value="{{ Session::token() }}">

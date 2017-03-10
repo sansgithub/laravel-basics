@@ -3,53 +3,58 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
+
 use App\Http\Requests;
-use Illuminate\Support\Facades\Auth;
+use Auth;
+use App\User;
+class UserController extends Controller
+{
+    public function getDashboard(){
+        if(Auth::user()) {
+            return view('dashboard');
+        }
+        return "Please Login";
+    }
 
-class UserController extends Controller{ 
+    public function postSignUp(Request $request)
+    {
 
-	public function getDashboard(){
-		return view('dashboard');
-	}
+        $this->validate($request,[
+            'email'=>array('required','email','unique:users'),
+            'first_name'=>array('required','max:120'),
+            'password'=>array('required','min:4'),
+        ]);
 
-    public function postSignUp(Request $request){
-    	
-    	$this->validate($request,[
-    		'email'			=> 'required|email|unique:users',
-    		'first_name'	=> 'required|max:120',
-    		'password'		=> 'required|min:4'
-    	]);
+        $email=$request['email'];
+        $first_name=$request['first_name'];
+        $password=bcrypt($request['password']);
 
-    	$email=$request['email'];
-    	$first_name=$request['first_name'];
-    	$password=bcrypt($request['password']);
+        $user=new User();
+        $user->email=$email;
+        $user->first_name=$first_name;
+        $user->password=$password;
 
-    	$user=new User();
-    	$user->email=$email;
-    	$user->first_name=$first_name;
-    	$user->password=$password;
+        $user->save();
 
-    	$user->save();
-    	Auth::login($user);
+        Auth::login($user);
 
-    	return redirect()->route('dashboard');
+        return redirect('/dashboard');
     }
 
     public function postSignIn(Request $request){
-    	
-    	$this->validate($request,[
-    		'email'			=> 'required',
-    		'password'		=> 'required'
-    	]);
 
-    	if(Auth::attempt([
-    			'email'=>$request['email'],
-    			'password'=>$request['password']
-    		])){
-    			return redirect()->route('dashboard');
-    	}
+        $this->validate($request,[
+            'email_for_signin'			=> 'required|email',
+            'password_for_signin'		=> 'required',
+        ]);
 
-    	return redirect()->back();
+        if(Auth::attempt([
+            'email'=>$request['email_for_signin'],
+            'password'=>$request['password_for_signin']
+        ])){
+            return redirect('/dashboard');
+        }
+
+        return redirect()->back();
     }
 }
